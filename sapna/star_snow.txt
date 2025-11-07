@@ -1,0 +1,96 @@
+use online_food_ordering
+
+db.dimCustomer.insertMany([
+  { custId: "C101", name: "Aarav Sharma", gender: "M", city: "Pune", state: "Maharashtra" },
+  { custId: "C102", name: "Isha Patel", gender: "F", city: "Mumbai", state: "Maharashtra" }
+])
+
+db.dimRestaurant.insertMany([
+  { restId: "R201", name: "Spice Villa", city: "Pune", cuisineType: "Indian", rating: 4.5 },
+  { restId: "R202", name: "Burger Hub", city: "Mumbai", cuisineType: "Fast Food", rating: 4.2 }
+])
+
+db.dimFood.insertMany([
+  { foodId: "F301", foodName: "Paneer Butter Masala", category: "Veg", price: 250 },
+  { foodId: "F302", foodName: "Chicken Burger", category: "Non-Veg", price: 180 }
+])
+
+db.dimPayment.insertMany([
+  { payId: "P401", mode: "UPI", status: "Success", discount: 50 },
+  { payId: "P402", mode: "Card", status: "Success", discount: 0 }
+])
+
+db.dimDelivery.insertMany([
+  { deliveryId: "D501", agent: "Rahul", time: "30 min", status: "Delivered" },
+  { deliveryId: "D502", agent: "Meena", time: "25 min", status: "Delivered" }
+])
+
+db.dimDate.insertMany([
+  { dateId: "DT601", day: 5, month: "Nov", year: 2025, weekday: "Wednesday" },
+  { dateId: "DT602", day: 6, month: "Nov", year: 2025, weekday: "Thursday" }
+])
+
+db.factOrders.insertMany([
+  { orderId: 1, custId: "C101", restId: "R201", foodId: "F301", payId: "P401", deliveryId: "D501", dateId: "DT601", quantity: 2, totalAmount: 500 },
+  { orderId: 2, custId: "C102", restId: "R202", foodId: "F302", payId: "P402", deliveryId: "D502", dateId: "DT602", quantity: 3, totalAmount: 540 }
+])
+
+print("⭐ STAR SCHEMA DATA:")
+db.factOrders.find().forEach(printjson)
+
+db.dimLocation.insertMany([
+  { locationId: "L1", city: "Pune", state: "Maharashtra", country: "India" },
+  { locationId: "L2", city: "Mumbai", state: "Maharashtra", country: "India" }
+])
+
+db.snowCustomer.insertMany([
+  { custId: "C101", name: "Aarav Sharma", gender: "M", locationId: "L1" },
+  { custId: "C102", name: "Isha Patel", gender: "F", locationId: "L2" }
+])
+
+db.dimCuisine.insertMany([
+  { cuisineId: "CU1", cuisineName: "Indian" },
+  { cuisineId: "CU2", cuisineName: "Fast Food" }
+])
+
+db.snowRestaurant.insertMany([
+  { restId: "R201", name: "Spice Villa", city: "Pune", cuisineId: "CU1", rating: 4.5 },
+  { restId: "R202", name: "Burger Hub", city: "Mumbai", cuisineId: "CU2", rating: 4.2 }
+])
+
+db.snowFood.insertMany([
+  { foodId: "F301", foodName: "Paneer Butter Masala", category: "Veg", price: 250 },
+  { foodId: "F302", foodName: "Chicken Burger", category: "Non-Veg", price: 180 }
+])
+
+db.snowPayment.insertMany([
+  { payId: "P401", mode: "UPI", status: "Success", discount: 50 },
+  { payId: "P402", mode: "Card", status: "Success", discount: 0 }
+])
+
+db.snowDelivery.insertMany([
+  { deliveryId: "D501", agent: "Rahul", time: "30 min", status: "Delivered" },
+  { deliveryId: "D502", agent: "Meena", time: "25 min", status: "Delivered" }
+])
+
+db.snowDate.insertMany([
+  { dateId: "DT601", day: 5, month: "Nov", year: 2025, weekday: "Wednesday" },
+  { dateId: "DT602", day: 6, month: "Nov", year: 2025, weekday: "Thursday" }
+])
+
+db.snowFactOrders.insertMany([
+  { orderId: 1, custId: "C101", restId: "R201", foodId: "F301", payId: "P401", deliveryId: "D501", dateId: "DT601", quantity: 2, totalAmount: 500 },
+  { orderId: 2, custId: "C102", restId: "R202", foodId: "F302", payId: "P402", deliveryId: "D502", dateId: "DT602", quantity: 3, totalAmount: 540 }
+])
+
+print("❄️ SNOWFLAKE SCHEMA DATA:")
+db.snowFactOrders.find().forEach(printjson)
+
+db.factOrders.createIndex({ custId: 1 })
+db.factOrders.createIndex({ restId: 1 })
+db.factOrders.createIndex({ dateId: 1 })
+
+print("✅ Indexes created for factOrders:")
+printjson(db.factOrders.getIndexes())
+
+

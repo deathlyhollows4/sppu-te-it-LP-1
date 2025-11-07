@@ -1,0 +1,54 @@
+use employee_mgmt_queries
+
+db.employees.insertMany([
+  { empId: 1, name: "Aarav Sharma",  department: "Engineering", salary: 60000, city: "Pune", skills: ["Java", "MongoDB"], experience: 2 },
+  { empId: 2, name: "Isha Patel",    department: "HR",          salary: 45000, city: "Mumbai", skills: ["Excel", "Communication"], experience: 3 },
+  { empId: 3, name: "Rohit Verma",   department: "Finance",     salary: 55000, city: "Delhi", skills: ["Accounting"], experience: 4 },
+  { empId: 4, name: "Meera Iyer",    department: "Engineering", salary: 70000, city: "Pune", skills: ["Python", "Node.js"], experience: 5 },
+  { empId: 5, name: "Tanya Singh",   department: "Engineering", salary: 80000, city: "Bangalore", skills: ["Java", "React"], experience: 6 },
+  { empId: 6, name: "Karan Gupta",   department: "Finance",     salary: 50000, city: "Chennai", skills: ["Excel", "Tally"], experience: 1 },
+  { empId: 7, name: "Riya Mehta",    department: null,          salary: 0, city: null, skills: [], experience: 0 }
+])
+
+print("1️⃣ All Employees:")
+db.employees.find().forEach(printjson)
+
+print("2️⃣ One Employee (empId = 3):")
+printjson(db.employees.findOne({ empId: 3 }))
+
+print("3️⃣ Employees with salary > 55000:")
+db.employees.find({ salary: { $gt: 55000 } }).forEach(printjson)
+
+print("4️⃣ Employees in HR OR in Finance:")
+db.employees.find({
+  $or: [{ department: "HR" }, { department: "Finance" }]
+}).forEach(printjson)
+
+print("5️⃣ Employees NOT in Pune:")
+db.employees.find({
+  city: { $not: { $eq: "Pune" } }
+}).forEach(printjson)
+
+print("6️⃣ Engineering employees with salary > 65000:")
+db.employees.find({
+  department: "Engineering",
+  salary: { $gt: 65000 }
+}).forEach(printjson)
+
+print("7️⃣ Employees with NULL department:")
+db.employees.find({ department: null }).forEach(printjson)
+
+print("8️⃣ Employees whose name starts with M:")
+db.employees.find({ name: { $regex: /^M/, $options: "i" } }).forEach(printjson)
+
+print("9️⃣ Employees having skill = 'Java':")
+db.employees.find({ skills: "Java" }).forEach(printjson)
+
+print("🔟 Employees with experience > 3 and salary > 50000:")
+db.employees.find({
+  $where: function() {
+    return this.experience > 3 && this.salary > 50000
+  }
+}).forEach(printjson)
+
+print("\n✅ Total Employee Count:", db.employees.countDocuments())

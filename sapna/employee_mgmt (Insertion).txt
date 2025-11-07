@@ -1,0 +1,59 @@
+use employee_mgmt
+
+db.employees.insertOne({
+  empId: 1,
+  name: "Aarav Sharma",
+  department: "Engineering",
+  salary: 60000,
+  city: "Pune"
+})
+
+db.employees.insertMany([
+  { empId: 2, name: "Isha Patel", department: "HR", salary: 50000, city: "Mumbai" },
+  { empId: 3, name: "Rohit Verma", department: "Finance", salary: 55000, city: "Delhi" },
+  { empId: 4, name: "Meera Iyer", department: "Engineering", salary: 65000, city: "Pune" },
+  { empId: 5, name: "Tanya Singh", department: "Engineering", salary: 70000, city: "Bangalore" }
+])
+
+print("All Employees:")
+db.employees.find().forEach(printjson)
+
+db.employees.deleteOne({ empId: 3 })
+db.employees.deleteMany({ department: "HR" })
+
+db.employees.replaceOne(
+  { empId: 1 },
+  { empId: 1, name: "Aarav Sharma", department: "Engineering", salary: 65000, city: "Pune" }
+)
+
+db.employees.updateOne(
+  { empId: 4 },
+  { $set: { city: "Hyderabad" }, $inc: { salary: 5000 } }
+)
+
+db.employees.updateOne(
+  { empId: 6 },
+  { $set: { name: "New Employee", department: "Finance", salary: 48000, city: "Chennai" } },
+  { upsert: true }
+)
+
+db.employees.updateMany(
+  { department: "Engineering" },
+  { $inc: { salary: 2000 } }
+)
+
+print("Updated Employee:")
+printjson(db.employees.findOne({ empId: 4 }))
+
+print("---- Cursor Examples ----")
+print("First 3 Employees:")
+db.employees.find().limit(3).forEach(printjson)
+
+print("Skip 2 Employees:")
+db.employees.find().skip(2).forEach(printjson)
+
+print("Employees Sorted by Salary (Descending):")
+db.employees.find().sort({ salary: -1 }).forEach(printjson)
+
+print("Engineering Employees with Salary > 60000:")
+db.employees.find({ department: "Engineering", salary: { $gt: 60000 } }).forEach(printjson)

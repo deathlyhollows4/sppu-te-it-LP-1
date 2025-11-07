@@ -1,0 +1,68 @@
+use orders_aggregation_db
+
+db.orders.insertMany([
+  { orderId: 1, custId: "C101", date: new Date("2024-01-05"), amount: 2500, items: ["Laptop", "Mouse"] },
+  { orderId: 2, custId: "C102", date: new Date("2024-01-07"), amount: 1800, items: ["Keyboard"] },
+  { orderId: 3, custId: "C101", date: new Date("2024-01-09"), amount: 3200, items: ["Monitor"] },
+  { orderId: 4, custId: "C103", date: new Date("2024-02-10"), amount: 1500, items: ["Charger", "Mouse"] },
+  { orderId: 5, custId: "C102", date: new Date("2024-02-11"), amount: 2200, items: ["Keyboard", "Headset"] },
+  { orderId: 6, custId: "C101", date: new Date("2024-02-12"), amount: 1000, items: ["Mousepad"] },
+  { orderId: 7, custId: "C103", date: new Date("2024-02-15"), amount: 2500, items: ["Monitor"] },
+  { orderId: 8, custId: "C104", date: new Date("2024-03-01"), amount: 3000, items: ["Laptop", "Bag"] }
+])
+
+print("All Orders:")
+db.orders.find().forEach(printjson)
+
+print("1️⃣ Total amount spent by each customer:")
+db.orders.aggregate([
+  { $group: { _id: "$custId", totalAmount: { $sum: "$amount" } } }
+]).forEach(printjson)
+
+print("2️⃣ Min and Max amount per customer:")
+db.orders.aggregate([
+  { $group: { _id: "$custId", minAmount: { $min: "$amount" }, maxAmount: { $max: "$amount" } } }
+]).forEach(printjson)
+
+print("3️⃣ Average order amount per customer:")
+db.orders.aggregate([
+  { $group: { _id: "$custId", avgAmount: { $avg: "$amount" } } }
+]).forEach(printjson)
+
+print("4️⃣ Number of orders by each customer:")
+db.orders.aggregate([
+  { $group: { _id: "$custId", totalOrders: { $count: {} } } }
+]).forEach(printjson)
+
+print("5️⃣ First and Last order date per customer:")
+db.orders.aggregate([
+  { $sort: { date: 1 } },
+  { $group: { 
+      _id: "$custId", 
+      firstOrder: { $first: "$date" },
+      lastOrder: { $last: "$date" }
+    } 
+  }
+]).forEach(printjson)
+
+print("6️⃣ All order amounts (push) per customer:")
+db.orders.aggregate([
+  { $group: { _id: "$custId", allAmounts: { $push: "$amount" } } }
+]).forEach(printjson)
+
+print("7️⃣ Unique items bought by each customer (addToSet):")
+db.orders.aggregate([
+  { $unwind: "$items" },
+  { $group: { _id: "$custId", uniqueItems: { $addToSet: "$items" } } }
+]).forEach(printjson)
+
+db.orders.createIndex({ custId: 1 })
+db.orders.createIndex({ date: -1 })
+
+print("Indexes Created:")
+printjson(db.orders.getIndexes())
+
+print("Find all orders of C101 using index:")
+db.orders.find({ custId: "C101" }).explain("executionStats")
+
+
