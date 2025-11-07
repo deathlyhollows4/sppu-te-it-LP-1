@@ -1,0 +1,136 @@
+test> db.createCollection("a")
+{ ok: 1 }
+test> show dbs
+admin   40.00 KiB
+config  12.00 KiB
+local   72.00 KiB
+test    16.00 KiB
+
+
+test> db.e.insert({id:8, name: "nirmal",age:22,dept:'IT',salary:110000})
+DeprecationWarning: Collection.insert() is deprecated. Use insertOne, insertMany, or bulkWrite.
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId("66bec8844c90a0a581998df8") }
+}
+test> db.e.aggregate({$group:{_id:"$dept",totalSal:{$avg:"$salary"}}})
+[
+  { _id: 'IT', totalSal: 103333.33333333333 },
+  { _id: 'HR', totalSal: 39000 },
+  { _id: 'DEV', totalSal: 39250 }
+]
+test> db.e.find()
+[
+  {
+    _id: ObjectId("66b59d0b47ee683196638add"),
+    id: 1,
+    name: 'simran',
+    age: 20,
+    dept: 'IT',
+    salary: 150000
+  },
+  {
+    _id: ObjectId("66b59d0b47ee683196638ade"),
+    id: 2,
+    name: 'avni',
+    age: 15,
+    dept: 'HR',
+    salary: 34000,
+    experties: 'communication'
+  },
+  {
+    _id: ObjectId("66b59d0b47ee683196638adf"),
+    id: 3,
+    name: 'ayansh',
+    age: 19,
+    dept: 'DEV',
+    salary: 33500,
+    hobby: 'football'
+  },
+  {
+    _id: ObjectId("66b59d0b47ee683196638ae0"),
+    id: 4,
+    name: 'dinesh',
+    age: 40,
+    dept: 'IT',
+    salary: 50000
+  },
+  {
+    _id: ObjectId("66b59d0b47ee683196638ae1"),
+    id: 5,
+    name: 'pooja',
+    age: 35,
+    dept: 'HR',
+    salary: 48000
+  },
+  {
+    _id: ObjectId("66b59d0b47ee683196638ae2"),
+    id: 6,
+    name: 'diwakar',
+    age: 21,
+    dept: 'DEV',
+    salary: 45000
+  },
+  {
+    _id: ObjectId("66b59d0b47ee683196638ae3"),
+    id: 7,
+    name: 'sachin',
+    age: 28,
+    dept: 'HR',
+    salary: 35000
+  },
+  {
+    _id: ObjectId("66bec8844c90a0a581998df8"),
+    id: 8,
+    name: 'nirmal',
+    age: 22,
+    dept: 'IT',
+    salary: 110000
+  }
+]
+test> db.e.aggregate({$group:{_id:"$dept", totsal:{$sum:"$salary"}}})
+[
+  { _id: 'IT', totsal: 310000 },
+  { _id: 'HR', totsal: 117000 },
+  { _id: 'DEV', totsal: 78500 }
+]
+test> db.e.aggregate({$group:{_id:"$dept", totAvgSal:{$avg:"$salary"}}})
+[
+  { _id: 'IT', totAvgSal: 103333.33333333333 },
+  { _id: 'HR', totAvgSal: 39000 },
+  { _id: 'DEV', totAvgSal: 39250 }
+]
+test> db.e.aggregate({$group:{_id:"$dept", MaximumSal:{$max:"$salary"}}})
+[
+  { _id: 'IT', MaximumSal: 150000 },
+  { _id: 'HR', MaximumSal: 48000 },
+  { _id: 'DEV', MaximumSal: 45000 }
+]
+
+test> db.e.aggregate({ $group: { _id: "$dept", totsal: { $sum: "$salary" } } }, { $match: { totsal: { $gt: 100000 } } })
+[ { _id: 'HR', totsal: 117000 }, { _id: 'IT', totsal: 310000 } ]
+
+test> db.e.aggregate({$group:{_id:"$dept",total:{$sum:1}}})
+[
+  { _id: 'IT', total: 3 },
+  { _id: 'DEV', total: 2 },
+  { _id: 'HR', total: 3 }
+]
+test> db.e.aggregate([{$group:{_id:"$dept",empid:{$push:"$id"}}}])
+[
+  { _id: 'HR', empid: [ 2, 5, 7 ] },
+  { _id: 'IT', empid: [ 1, 4, 8 ] },
+  { _id: 'DEV', empid: [ 3, 6 ] }
+]
+test> db.e.aggregate([{$group:{_id:"$dept",firstemp:{$first:"$id"}}}])
+[
+  { _id: 'IT', firstemp: 1 },
+  { _id: 'HR', firstemp: 2 },
+  { _id: 'DEV', firstemp: 3 }
+]
+test> db.e.aggregate([{$group:{_id:"$dept",firstemp:{$last:"$id"}}}])
+[
+  { _id: 'HR', firstemp: 7 },
+  { _id: 'IT', firstemp: 8 },
+  { _id: 'DEV', firstemp: 6 }
+]

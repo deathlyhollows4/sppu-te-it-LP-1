@@ -1,0 +1,448 @@
+Please enter a MongoDB connection string (Default: mongodb://localhost/):
+
+
+test> show collections
+hi
+
+test> db.createCollection("a")
+{ ok: 1 }
+test> show dbs
+admin   40.00 KiB
+config  12.00 KiB
+local   72.00 KiB
+test    16.00 KiB
+test> db.a.insert({id:1 , name: "simran", age :19})
+DeprecationWarning: Collection.insert() is deprecated. Use insertOne, insertMany, or bulkWrite.
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId("6699e6b9d28c9b8d63b1d4ae") }
+}
+test> db.a.insert({id:2 , name: "avni", age :2})
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId("6699e6ded28c9b8d63b1d4af") }
+}
+test> db.a.insert({id:3 , name: "ayansh", age :15, status : "kid"})
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId("6699e72ed28c9b8d63b1d4b0") }
+}
+test> db.a.insert({id:4 , name: "nirmal", age :"twenty-two", profession : "army"})
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId("6699e763d28c9b8d63b1d4b1") }
+}
+test> db.a.find()
+[
+  {
+    _id: ObjectId("6699e6b9d28c9b8d63b1d4ae"),
+    id: 1,
+    name: 'simran',
+    age: 19
+  },
+  {
+    _id: ObjectId("6699e6ded28c9b8d63b1d4af"),
+    id: 2,
+    name: 'avni',
+    age: 2
+  },
+  {
+    _id: ObjectId("6699e72ed28c9b8d63b1d4b0"),
+    id: 3,
+    name: 'ayansh',
+    age: 15,
+    status: 'kid'
+  },
+  {
+    _id: ObjectId("6699e763d28c9b8d63b1d4b1"),
+    id: 4,
+    name: 'nirmal',
+    age: 'twenty-two',
+    profession: 'army'
+  }
+]
+
+
+test> db.a.find({id:2})
+[
+  {
+    _id: ObjectId("6699e6ded28c9b8d63b1d4af"),
+    id: 2,
+    name: 'avni',
+    age: 2
+  }
+]
+test> db.a.findOne()
+{
+  _id: ObjectId("6699e6b9d28c9b8d63b1d4ae"),
+  id: 1,
+  name: 'simran',
+  age: 19
+}
+test> db.a.find().count()
+4
+test> db.a.update({id:1},{$set:{name:"sakshi"}})
+DeprecationWarning: Collection.update() is deprecated. Use updateOne, updateMany, or bulkWrite.
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+test> db.a.findOne()
+{
+  _id: ObjectId("6699e6b9d28c9b8d63b1d4ae"),
+  id: 1,
+  name: 'sakshi',
+  age: 19
+}
+test> db.a.updateMany({},$set:{address:"uttarakhand"})
+Uncaught:
+SyntaxError: Unexpected token, expected "," (1:23)
+
+> 1 | db.a.updateMany({},$set:{address:"uttarakhand"})
+    |                        ^
+  2 |
+
+test> db.a.updateMany({},{$set:{address:"uttarakhand"}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 4,
+  modifiedCount: 4,
+  upsertedCount: 0
+}
+test> db.a.find()
+[
+  {
+    _id: ObjectId("6699e6b9d28c9b8d63b1d4ae"),
+    id: 1,
+    name: 'sakshi',
+    age: 19,
+    address: 'uttarakhand'
+  },
+  {
+    _id: ObjectId("6699e6ded28c9b8d63b1d4af"),
+    id: 2,
+    name: 'avni',
+    age: 2,
+    address: 'uttarakhand'
+  },
+  {
+    _id: ObjectId("6699e72ed28c9b8d63b1d4b0"),
+    id: 3,
+    name: 'ayansh',
+    age: 15,
+    status: 'kid',
+    address: 'uttarakhand'
+  },
+  {
+    _id: ObjectId("6699e763d28c9b8d63b1d4b1"),
+    id: 4,
+    name: 'nirmal',
+    age: 'twenty-two',
+    profession: 'army',
+    address: 'uttarakhand'
+  }
+]
+
+
+test> db.a.ensureIndex({id:-1})
+[ 'id_-1' ]
+test> db.a.find()
+[
+  {
+    _id: ObjectId("6699e6b9d28c9b8d63b1d4ae"),
+    id: 1,
+    name: 'sakshi',
+    age: 19,
+    address: 'uttarakhand'
+  },
+  {
+    _id: ObjectId("6699e6ded28c9b8d63b1d4af"),
+    id: 2,
+    name: 'avni',
+    age: 2,
+    address: 'uttarakhand'
+  },
+  {
+    _id: ObjectId("6699e72ed28c9b8d63b1d4b0"),
+    id: 3,
+    name: 'ayansh',
+    age: 15,
+    status: 'kid',
+    address: 'uttarakhand'
+  },
+  {
+    _id: ObjectId("6699e763d28c9b8d63b1d4b1"),
+    id: 4,
+    name: 'nirmal',
+    age: 'twenty-two',
+    profession: 'army',
+    address: 'uttarakhand'
+  }
+]
+test> db.a.find({age: {$gte: 10}})
+[
+  {
+    _id: ObjectId("6699e6b9d28c9b8d63b1d4ae"),
+    id: 1,
+    name: 'sakshi',
+    age: 19,
+    address: 'uttarakhand'
+  },
+  {
+    _id: ObjectId("6699e72ed28c9b8d63b1d4b0"),
+    id: 3,
+    name: 'ayansh',
+    age: 15,
+    status: 'kid',
+    address: 'uttarakhand'
+  }
+]
+test> db.a.find({$or: [{name: "ria"}, {profession: "army"}]})
+[
+  {
+    _id: ObjectId("6699e763d28c9b8d63b1d4b1"),
+    id: 4,
+    name: 'nirmal',
+    age: 'twenty-two',
+    profession: 'army',
+    address: 'uttarakhand'
+  }
+]
+test> db.a.find({age: {$gte: 15, $lte: 25}})
+[
+  {
+    _id: ObjectId("6699e6b9d28c9b8d63b1d4ae"),
+    id: 1,
+    name: 'sakshi',
+    age: 19,
+    address: 'uttarakhand'
+  },
+  {
+    _id: ObjectId("6699e72ed28c9b8d63b1d4b0"),
+    id: 3,
+    name: 'ayansh',
+    age: 15,
+    status: 'kid',
+    address: 'uttarakhand'
+  }
+]
+test> db.a.find({profession: {$exists: false}})
+[
+  {
+    _id: ObjectId("6699e6b9d28c9b8d63b1d4ae"),
+    id: 1,
+    name: 'sakshi',
+    age: 19,
+    address: 'uttarakhand'
+  },
+  {
+    _id: ObjectId("6699e6ded28c9b8d63b1d4af"),
+    id: 2,
+    name: 'avni',
+    age: 2,
+    address: 'uttarakhand'
+  },
+  {
+    _id: ObjectId("6699e72ed28c9b8d63b1d4b0"),
+    id: 3,
+    name: 'ayansh',
+    age: 15,
+    status: 'kid',
+    address: 'uttarakhand'
+  }
+]
+
+test> db.a.find().limit(2)
+[
+  {
+    _id: ObjectId("6699e6b9d28c9b8d63b1d4ae"),
+    id: 1,
+    name: 'sakshi',
+    age: 19,
+    address: 'uttarakhand'
+  },
+  {
+    _id: ObjectId("6699e6ded28c9b8d63b1d4af"),
+    id: 2,
+    name: 'avni',
+    age: 2,
+    address: 'uttarakhand'
+  }
+]
+test>
+
+
+test> db.a.find().skip(2)
+[
+  {
+    _id: ObjectId("6699e72ed28c9b8d63b1d4b0"),
+    id: 3,
+    name: 'ayansh',
+    age: 15,
+    status: 'kid',
+    address: 'uttarakhand'
+  },
+  {
+    _id: ObjectId("6699e763d28c9b8d63b1d4b1"),
+    id: 4,
+    name: 'nirmal',
+    age: 'twenty-two',
+    profession: 'army',
+    address: 'uttarakhand'
+  }
+]
+test>
+
+
+test> db.a.find().sort({age: -1})
+[
+  {
+    _id: ObjectId("6699e763d28c9b8d63b1d4b1"),
+    id: 4,
+    name: 'nirmal',
+    age: 'twenty-two',
+    profession: 'army',
+    address: 'uttarakhand'
+  },
+  {
+    _id: ObjectId("6699e6b9d28c9b8d63b1d4ae"),
+    id: 1,
+    name: 'sakshi',
+    age: 19,
+    address: 'uttarakhand'
+  },
+  {
+    _id: ObjectId("6699e72ed28c9b8d63b1d4b0"),
+    id: 3,
+    name: 'ayansh',
+    age: 15,
+    status: 'kid',
+    address: 'uttarakhand'
+  },
+  {
+    _id: ObjectId("6699e6ded28c9b8d63b1d4af"),
+    id: 2,
+    name: 'avni',
+    age: 2,
+    address: 'uttarakhand'
+  }
+]
+test>
+
+test> db.a.find({}, {name: 1, age: 1}).sort({age: -1}).limit(2)
+[
+  {
+    _id: ObjectId("6699e763d28c9b8d63b1d4b1"),
+    name: 'nirmal',
+    age: 'twenty-two'
+  },
+  {
+    _id: ObjectId("6699e6b9d28c9b8d63b1d4ae"),
+    name: 'sakshi',
+    age: 19
+  }
+]
+
+
+
+test> db.createCollection("b", {
+...    validator: {
+...       $jsonSchema: {
+...          bsonType: "object",
+...          required: ["id", "name"],
+...          properties: {
+...             id: {
+...                bsonType: "string",
+...                description: "must be a string and is required"
+...             },
+...             name: {
+...                bsonType: "string",
+...                description: "must be a string and is required"
+...             }
+...          }
+...       }
+...    }
+... })
+{ ok: 1 }
+test> db.b.insert({id:1, name:"simi"})
+DeprecationWarning: Collection.insert() is deprecated. Use insertOne, insertMany, or bulkWrite.
+Uncaught:
+MongoBulkWriteError: Document failed validation
+Result: BulkWriteResult {
+  insertedCount: 0,
+  matchedCount: 0,
+  modifiedCount: 0,
+  deletedCount: 0,
+  upsertedCount: 0,
+  upsertedIds: {},
+  insertedIds: { '0': ObjectId("66ac57dfdaafb87ba87e128f") }
+}
+Write Errors: [
+  WriteError {
+    err: {
+      index: 0,
+      code: 121,
+      errmsg: 'Document failed validation',
+      errInfo: {
+        failingDocumentId: ObjectId("66ac57dfdaafb87ba87e128f"),
+        details: {
+          operatorName: '$jsonSchema',
+          schemaRulesNotSatisfied: [
+            {
+              operatorName: 'properties',
+              propertiesNotSatisfied: [Array]
+            }
+          ]
+        }
+      },
+      op: {
+        id: 1,
+        name: 'simi',
+        _id: ObjectId("66ac57dfdaafb87ba87e128f")
+      }
+    }
+  }
+]
+test> db.b.insertOne({id: "1", name: "simi"})
+{
+  acknowledged: true,
+  insertedId: ObjectId("66ac580cdaafb87ba87e1290")
+}
+test> db.b.insertOne({id: "2"})
+Uncaught:
+MongoServerError: Document failed validation
+Additional information: {
+  failingDocumentId: ObjectId("66ac5819daafb87ba87e1291"),
+  details: {
+    operatorName: '$jsonSchema',
+    schemaRulesNotSatisfied: [
+      {
+        operatorName: 'required',
+        specifiedAs: { required: [ 'id', 'name' ] },
+        missingProperties: [ 'name' ]
+      }
+    ]
+  }
+}
+test> db.a.replaceOne({ id: 1 }, { id: 1, name: "sakshi", age: 20 });
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+test> db.a.find({id:1})
+[
+  {
+    _id: ObjectId("6699e6b9d28c9b8d63b1d4ae"),
+    id: 1,
+    name: 'sakshi',
+    age: 20
+  }
+]
+test>
